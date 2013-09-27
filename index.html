@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html ng-app="IntergalacticTravel" lang="en">
+  <head>
+    <title>InterGOOGLactic Travel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/app.css" rel="stylesheet" media="screen">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="js/planets.js"></script>
+    <script src="js/ads.js"></script>
+    <script src="js/upcoming-events.js"></script>
+    <script src="js/tour-options.js"></script>
+  </head>
+
+  <body ng-controller="IntergalacticTravelController" data-spy="scroll" data-target=".nav">
+    <div class="container-narrow" id="container">
+        <div class="masthead ">
+          <h1 class="muted">InterGOOGLactic Travel</h1>
+          <div class="clearfix">
+            <!-- Use landmark roles -->
+            <ul class="nav nav-pills pull-right" role="menu">
+              <li class="active"><a href="#purchase" role="menuitem">Purchase Tickets</a></li>
+              <li><a href="#destination" role="menuitem">Destination</a></li>
+              <li><a href="#departure" role="menuitem">Departure Date</a></li>
+              <li><a href="#options" role="menuitem">Options</a></li>
+              <li><a href="#learn" role="menuitem">Learn More</a></li>
+            </ul>
+          </div>
+          <hr>
+        </div>
+        <div id="ad-banner" class="text-center">
+          <!-- Live Regions: Fix by removing aria-live="assertive". -->
+          <img id="ad-image" src="img/{{ad.filename}}" height="60" width="468" alt="{{ad.text}}" title="{{ad.text}}">
+        </div>
+    <!-- Use landmark roles -->
+    <div id="maincontent" role="main">
+        <div class="jumbotron" id="purchase">
+          <h2 class="text-center">Super cheap tickets to OUTERSPACE!</h2>
+          <p class="lead text-center">Come join us in intergalactic space travel. It will be awesome!</p>
+          <form class="form-horizontal form-destination">
+
+            <div class="control-group" id="destination">
+              <label class="control-label" for="destination">Destination</label>
+              <div class="controls">
+                <input type="text" placeholder="Choose your destination" id="input-destination" class="input-xlarge" name="destination" value="{{destination.name}}">
+              </div>
+            </div>
+
+            <div class="control-group" id="departure">
+              <label class="control-label" for="date">Departure date</label>
+              <div class="controls">
+                <div class="input-append date" name="date">
+                  <input class="input-xlarge" type="date" id="date" value="2014-04-01">
+                </div>
+              </div>
+            </div>
+            <div class="control-group" id="options">
+              <div class="controls">
+                <label class="checkbox">
+                  <input type="checkbox" class="all-options-checkbox" data-indeterminate-checkbox  data-child-list="tourOptions" data-property="checked" data-ng-model="allOptions" role="checkbox" aria-checked="">
+                  <strong>I want the full space experience!</strong>
+                </label>
+                <label class="checkbox" data-ng-repeat="option in tourOptions">
+                  <input type="checkbox" class="option-checkbox" data-ng-model="option.checked">
+                  {{option.type}} <span class="muted">({{option.price | currency }})</span>
+                </label>
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="controls">
+                <!-- Live Regions: Fix by adding aria-live="polite". -->
+                <h2 aria-live="polite">Total: {{totalPrice() | currency}}</h2>
+                <!-- Fix by using role="button". -->
+                <div data-toggle="modal" data-target="#modal-purchase" class="btn btn-large btn-success span4" id ="purchase-tickets" tabindex="0" role="button">Purchase Tickets</div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <hr>
+        <div class="row-fluid">
+          <div class="span12">
+            <h2 id="learn">Learn More About {{destination.name}}</h2>
+          </div>
+        </div>
+        <div class="row-fluid marketing">
+          <div class="span6">
+            <h3>A Blurb about {{destination.name}}</h3>
+            <p>
+              {{destination.blurb}}
+            </p>
+            <small>
+              <cite>
+                <a href="https://en.wikipedia.org/wiki/{{destination.wikipediaPage}}">From Wikipedia</a>
+              </cite>
+            </small>
+            <h3>Distance from Earth</h3>
+            <p>
+              {{destination.name}} is approximately {{destination.distance | number}} miles away from Earth. It's probably gonna take a while to get there!
+            </p>
+          </div>
+          <div class="span6">
+            <h3>Upcoming Events</h3>
+            <div class="accordion" id="upcoming-events">
+              <div class="accordion-group" data-ng-repeat="event in upcomingEvents">
+                <div class="accordion-heading">
+                  <!-- Expand/collapse. Need to set initial state of aria-expanded to false.-->
+                  <button class="accordion-toggle" id="collapsecontrol{{$index}}" data-toggle="collapse" data-parent="#upcoming-events" href="#collapse{{$index}}" aria-expanded="false">{{event.date}}</button>
+                </div>
+	        	    <!-- Expand/collapse. Need to set initial state of aria-hidden to true. -->
+                <div id="collapse{{$index}}" class="accordion-body collapse" aria-hidden="true">
+                  <div class="accordion-inner">
+                    <dl>
+                      <dt>{{event.headline}}</dt>
+                      <dd>{{event.description}}</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="footer" id="contact">
+          <p>&copy; Google Inc 2013</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Twitter Bootsrap Modal -->
+    <!-- http://twitter.github.io/bootstrap/javascript.html#modals -->
+    <div id="modal-purchase" class="modal hide fade" tabindex="0">
+      <div class="modal-header">
+        <!-- Use aria-label to make this button more understandable -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="close">&times;</button>
+        <h2>Purchase Tickets</h2>
+      </div>
+      <div class="modal-body">
+        <p>
+          Sorry! We haven't finished our Google Wallet integration yet. Check back soon!
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <!-- Fix with disabled=true -->
+        <button class="btn" style="color:#AAAAAA; background-color: #ddd" disabled>Purchase</button>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/mainapp.js"></script>
+
+
+    <script type="text/javascript">
+      /**
+       * Tri-state Checkboxes: Fix with role='checkbox' and
+       *     aria-checked='false/mixed/true'.
+       * Determine which state to put the checkbox in. This causes the checkbox
+       *     to either be unchecked, checked, or show a dash.
+       */
+      function handleTriStateCheckboxStateChange(triStateCheckboxElem,
+            hasCheckedChildren, hasUncheckedChildren) {
+        if (hasCheckedChildren && hasUncheckedChildren) {
+          triStateCheckboxElem.setAttribute('checked', false);
+          triStateCheckboxElem.setAttribute('indeterminate', true);
+          triStateCheckboxElem.setAttribute('aria-checked', 'mixed');
+        } else {
+          triStateCheckboxElem.setAttribute('checked', hasCheckedChildren);
+          triStateCheckboxElem.setAttribute('indeterminate', false);
+          triStateCheckboxElem.setAttribute('aria-checked', hasCheckedChildren);
+        }
+      }
+
+      /**
+       * Auto-Completion: Fix with aria-activedescendant.
+       * Sets the autocomplete item to 'active'. This creates the blue highlight
+       *     around the currently selected autocomplete item when the user
+       *     arrows to it.
+       */
+      function setActiveAutocompleteItem(acItemElem){
+        acItemElem.className = 'active';
+        document.getElementById('input-destination').setAttribute('aria-activedescendant', acItemElem.id);
+      }
+
+      /**
+       * Focus management: Fix with aria-hidden.
+       * Sets the className of the modalPopupElem so that it is displayed.
+       */
+      function showModalPopup(modalPopupElem){
+        modalPopupElem.className = 'modal hide fade in';
+        modalPopupElem.focus();         
+        document.getElementById('container').setAttribute('aria-hidden', 'true');
+      }
+
+      /**
+       * Expand/collapse
+       * Sets the className of the collapseAreaElem so that it is displayed.
+       * collapseControlElem is passed to this method in case we need it later.
+       */
+      function showCollapsableArea(collapseControlElem, collapseAreaElem){
+        collapseAreaElem.className = 'accordion-body in collapse';
+        collapseAreaElem.setAttribute('aria-hidden', 'false');
+        collapseControlElem.setAttribute('aria-expanded', 'true');
+      }
+      
+      /**
+       * Expand/collapse
+       * Sets the className of the collapseAreaElem so that it is hidden.
+       * collapseControlElem is passed to this method in case we need it later.
+       */
+      function hideCollapsableArea(collapseControlElem, collapseAreaElem){
+        collapseAreaElem.className = 'accordion-body collapse';
+        collapseAreaElem.setAttribute('aria-hidden', 'true');
+        collapseControlElem.setAttribute('aria-expanded', 'false');
+      }
+    </script>
+  </body>
+</html>
+
